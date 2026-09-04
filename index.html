@@ -78,7 +78,7 @@
   <div class="wrap">
     <h1>High-Speed ASV Control</h1>
     <p class="venue">Side project &middot; ongoing work <span class="badge">In progress</span></p>
-    <p class="authors">Kiyong Park &middot; Mobile Robotics &amp; Intelligence Laboratory (MORIN), KAIST</p>
+    <p class="authors">Kiyong Park &middot; Jinwhan Kim &middot; Mobile Robotics &amp; Intelligence Laboratory (MORIN), KAIST</p>
     <p class="affil">Accurate path following of an autonomous surface vehicle across the full speed range &mdash; up to planing speeds.</p>
   </div>
 </header>
@@ -112,19 +112,18 @@
             <source src="assets/highspeed_run2.mp4" type="video/mp4" />
           </video>
         </div>
-        <figcaption><b>High-speed ASV.</b> The sensorized planing hull used for the high-speed control trials, running under autonomous control during a sea trial.</figcaption>
       </figure>
     </div>
   </section>
 
   <section id="model">
     <div class="wrap">
-      <h2>Surge Feedforward Model</h2>
+      <h2>Surge Full Range Model</h2>
       <p class="lead">One low-speed fit cannot describe the thrust&ndash;speed curve across the planing transition.</p>
       <figure>
         <div class="media"><img src="assets/surge_ff_model.png" alt="Surge feedforward model: thrust vs surge speed with low- and high-speed regimes" /></div>
         <figcaption>
-          <b>Speed-scheduled thrust model.</b> The squared thrust command is fit separately to the
+          <b>Surge full range model.</b> The squared thrust command is fit separately to the
           low-speed (blue) and high-speed (red) data, which meet at a transition speed
           <b>u* = 5.85&nbsp;m/s</b>. Scheduling the feedforward term on surge speed gives the controller
           an accurate command-to-thrust map over the whole operating range.
@@ -132,7 +131,7 @@
       </figure>
       <ul class="pts" style="margin-top:22px">
         <li><b>Feedforward.</b> A speed-scheduled surge model supplies the nominal thrust so the feedback controller only has to reject residuals.</li>
-        <li><b>Guidance.</b> LOS guidance steers the vehicle onto and along the path, holding cross-track error below ~6&nbsp;m.</li>
+        <li><b>Guidance.</b> LOS guidance steers the vehicle onto and along the path.</li>
         <li><b>Regime handling.</b> The transition at u* switches between the displacement and planing fits, avoiding the model mismatch a single fit would incur at speed.</li>
       </ul>
     </div>
@@ -142,7 +141,7 @@
     <div class="wrap">
       <h2>Field Footage</h2>
       <p class="lead">The ASV running at high speed during sea trials.</p>
-      <div class="speedbar"><span class="big">48 knots</span> &asymp; 89 km/h &asymp; 24.7 m/s &mdash; top speed reached under autonomous control</div>
+      <div class="speedbar"><span class="big">48 knots</span> &asymp; 89 km/h &asymp; 24.7 m/s &mdash; average speed under autonomous control</div>
       <div class="stack">
         <figure>
           <span class="vlabel">High-speed run</span>
