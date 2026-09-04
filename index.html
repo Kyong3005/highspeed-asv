@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>High-Speed ASV Control</title>
+<meta name="description" content="Ongoing work on control of a high-speed autonomous surface vehicle (up to 48 knots): a speed-scheduled surge feedforward model and LOS guidance for accurate path following at planing speeds." />
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5c6470; --line:#e6e8ec;
+    --card:#f7f8fa; --accent:#1b5fa6; --accent-soft:#eaf1f9;
+    --maxw:960px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e8eaee; --muted:#9aa3b0; --line:#232a33;
+      --card:#151b23; --accent:#5aa0e6; --accent-soft:#16222f;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; font-size:17px; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .topnav{max-width:var(--maxw); margin:0 auto; padding:18px 20px 0; font-size:.9rem}
+  .topnav a{color:var(--muted); font-weight:600}
+
+  header{padding:34px 0 32px; text-align:center; border-bottom:1px solid var(--line)}
+  h1{font-size:2.05rem; line-height:1.25; margin:0 0 6px; letter-spacing:-.01em}
+  .venue{color:var(--muted); font-size:.95rem; margin:14px 0 0}
+  .venue .badge{display:inline-block; background:var(--accent-soft); color:var(--accent);
+    font-weight:700; font-size:.78rem; letter-spacing:.04em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; margin-left:6px}
+  .authors{margin:20px auto 4px; max-width:760px; font-size:1.02rem}
+  .affil{color:var(--muted); font-size:.9rem; margin:6px auto 0; max-width:760px}
+
+  section{padding:48px 0; border-bottom:1px solid var(--line)}
+  h2{font-size:1.5rem; margin:0 0 6px; letter-spacing:-.01em}
+  .lead{color:var(--muted); margin:0 0 26px; font-size:1rem}
+  p.body{margin:0 0 16px}
+  .abstract{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 28px}
+  .abstract p{margin:0; text-align:justify}
+
+  figure{margin:0}
+  .media{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card)}
+  .media img, .media video{display:block; width:100%; height:auto}
+  figcaption{color:var(--muted); font-size:.92rem; margin-top:12px; padding:0 2px}
+  figcaption b{color:var(--fg)}
+  .vlabel{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--accent); background:var(--accent-soft);
+    padding:4px 10px; border-radius:6px; margin-bottom:12px;}
+  .stack{display:grid; gap:40px}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:640px){ .two{grid-template-columns:1fr} }
+  .vtitle{font-weight:700; color:var(--fg); font-size:.9rem; margin:0 0 7px}
+
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px}
+  .cell{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center}
+  .cell .num{font-size:1.7rem; font-weight:700; color:var(--accent); line-height:1.1}
+  .cell .cap{font-size:.9rem; color:var(--muted); margin-top:4px}
+  @media (max-width:640px){ .grid{grid-template-columns:1fr} h1{font-size:1.7rem} }
+  ul.pts{margin:0; padding-left:20px}
+  ul.pts li{margin:0 0 10px}
+  footer{padding:34px 0 60px; text-align:center; color:var(--muted); font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="topnav"><a href="../">&larr; Kiyong Park &middot; Home</a></div>
+
+<header>
+  <div class="wrap">
+    <h1>High-Speed ASV Control</h1>
+    <p class="venue">Side project &middot; ongoing work <span class="badge">In progress</span></p>
+    <p class="authors">Kiyong Park &middot; Mobile Robotics &amp; Intelligence Laboratory (MORIN), KAIST</p>
+    <p class="affil">Accurate path following of an autonomous surface vehicle across the full speed range &mdash; up to planing speeds.</p>
+  </div>
+</header>
+
+<main>
+
+  <section id="overview">
+    <div class="wrap">
+      <h2>Overview</h2>
+      <div class="abstract">
+        <p>
+          Most surface-vehicle controllers are identified and tuned around low-speed operation.
+          At high speed the hull transitions to planing, the thrust&ndash;speed relationship changes
+          shape, and a single low-speed model no longer predicts the vehicle&rsquo;s response. This
+          project extends autonomous control of a fast ASV to that regime &mdash; combining a
+          speed-scheduled surge feedforward model with line-of-sight (LOS) guidance so the vehicle
+          follows its path accurately even as it accelerates toward top speed.
+        </p>
+      </div>
+
+      <div class="grid" style="margin-top:34px">
+        <div class="cell"><div class="num">48 kn</div><div class="cap">Max speed &asymp; 88.9 km/h (24.7 m/s)</div></div>
+        <div class="cell"><div class="num">&lt; 6 m</div><div class="cap">LOS guidance path error</div></div>
+        <div class="cell"><div class="num">u* = 5.85</div><div class="cap">Low&ndash;high speed transition (m/s)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="platform">
+    <div class="wrap">
+      <h2>Platform</h2>
+      <p class="lead">A planing-hull autonomous surface vehicle capable of high-speed operation.</p>
+      <figure>
+        <div class="media"><img src="assets/asv_hero.jpg" alt="High-speed ASV, side view" /></div>
+        <figcaption><b>High-speed ASV (side view).</b> The sensorized planing hull used for the high-speed control trials.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="model">
+    <div class="wrap">
+      <h2>Surge Feedforward Model</h2>
+      <p class="lead">One low-speed fit cannot describe the thrust&ndash;speed curve across the planing transition.</p>
+      <figure>
+        <div class="media"><img src="assets/surge_ff_model.png" alt="Surge feedforward model: thrust vs surge speed with low- and high-speed regimes" /></div>
+        <figcaption>
+          <b>Speed-scheduled thrust model.</b> The squared thrust command is fit separately to the
+          low-speed (blue) and high-speed (red) data, which meet at a transition speed
+          <b>u* = 5.85&nbsp;m/s</b>. Scheduling the feedforward term on surge speed gives the controller
+          an accurate command-to-thrust map over the whole operating range.
+        </figcaption>
+      </figure>
+      <ul class="pts" style="margin-top:22px">
+        <li><b>Feedforward.</b> A speed-scheduled surge model supplies the nominal thrust so the feedback controller only has to reject residuals.</li>
+        <li><b>Guidance.</b> LOS guidance steers the vehicle onto and along the path, holding cross-track error below ~6&nbsp;m.</li>
+        <li><b>Regime handling.</b> The transition at u* switches between the displacement and planing fits, avoiding the model mismatch a single fit would incur at speed.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="video">
+    <div class="wrap">
+      <h2>Field Footage</h2>
+      <p class="lead">The ASV running at high speed during sea trials.</p>
+      <div class="stack">
+        <figure>
+          <span class="vlabel">High-speed run</span>
+          <div class="media">
+            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/highspeed_run.jpg">
+              <source src="assets/highspeed_run.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <figcaption>The ASV planing at high speed under autonomous control during a sea trial.</figcaption>
+        </figure>
+        <figure>
+          <span class="vlabel">Additional run</span>
+          <div class="media">
+            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/highspeed_run2.jpg">
+              <source src="assets/highspeed_run2.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <figcaption>Further high-speed operation of the vehicle.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 Kiyong Park &middot; MORIN Lab, KAIST &middot; <a href="../">Home</a>
+  </div>
+</footer>
+
+</body>
+</html>
